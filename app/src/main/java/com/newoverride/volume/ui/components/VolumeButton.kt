@@ -1,5 +1,6 @@
 package com.newoverride.volume.ui.components
 
+import android.view.MotionEvent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -10,13 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.newoverride.volume.R
 import com.newoverride.volume.dimens.Dimens
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VolumeButton(
     direction: String,
@@ -49,6 +53,23 @@ fun VolumeButton(
             modifier = Modifier
                 .size(Dimens.buttonVolumeSize)
                 .scale(scaleUP)
+                .pointerInteropFilter {
+                    when (it.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            isPressedUP.value = true
+                            onClick()
+                            true
+                        }
+
+                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                            isPressedUP.value = true
+                            onClick()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
         ) {
             Image(
                 painter = painterResource(R.drawable.baseline_arrow_circle_up_24),
@@ -61,6 +82,23 @@ fun VolumeButton(
             modifier = Modifier
                 .size(Dimens.buttonVolumeSize)
                 .scale(scaleDOWN)
+                .pointerInteropFilter {
+                    when (it.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            isPressedDOWN.value = true
+                            onClick()
+                            true
+                        }
+
+                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                            isPressedDOWN.value = true
+                            onClick()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
         ) {
             Image(
                 painter = painterResource(R.drawable.outline_arrow_circle_down_24),
